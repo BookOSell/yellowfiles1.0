@@ -1,0 +1,578 @@
+<title>The Quiz Initiative</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: full-bleed image hero with floating pill nav, then wide editorial sections on a 12-col grid, left-aligned, with one oversized question-mark motif as the single bold element. */
+:root {
+  --ink: #0a0a0a;
+  --paper: #ffffff;
+  --surface: #f3f3f3;
+  --muted: #5c5c5c;
+  --line: #dcdcdc;
+  --accent: #ffc800;
+  --accent-ink: #0a0a0a;
+  --spark: #ffc800;
+  --hero-a: #000000;
+  --hero-b: #232323;
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --radius: 18px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f5f5f5; --paper: #000000; --surface: #121212; --muted: #a8a8a8; --line: #2a2a2a;
+    --accent: #ffc800; --accent-ink: #0a0a0a; --spark: #ffc800; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #f5f5f5; --paper: #000000; --surface: #121212; --muted: #a8a8a8; --line: #2a2a2a;
+  --accent: #ffc800; --accent-ink: #0a0a0a; --spark: #ffc800; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 17px/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow-x: hidden;
+}
+a { color: inherit; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+p { margin: 0; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; box-shadow: 0 0 0 6px var(--accent); }
+.wrap { max-width: 1240px; margin: 0 auto; }
+section { padding-block: clamp(64px, 9vw, 128px); }
+.label { font-weight: 600; font-size: 15px; color: var(--muted); }
+
+/* header */
+.top { position: fixed; z-index: 50; left: 0; right: 0; top: env(safe-area-inset-top, 0px);
+  padding: 16px max(16px, env(safe-area-inset-left, 0px)) 0 max(16px, env(safe-area-inset-right, 0px)); pointer-events: none; }
+.top-in { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.top-in > * { pointer-events: auto; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 1.05; letter-spacing: -0.01em; }
+.brand svg { width: 40px; height: 40px; flex: none; }
+.pill { display: flex; gap: 2px; padding: 6px; border-radius: 14px; background: rgba(0,0,0,.82); box-shadow: 0 0 0 1.5px #ffc800; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.pill a { text-decoration: none; padding: 9px 16px; border-radius: 10px; font-weight: 500; font-size: 15px; color: #fff; }
+.pill a:hover { background: #ffc800; color: #0a0a0a; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; cursor: pointer; text-decoration: none;
+  padding: 14px 26px; border-radius: 999px; font: 600 16px/1 var(--font-body); background: var(--accent); color: var(--accent-ink); }
+.btn:hover { filter: brightness(1.08); }
+.btn.alt { background: transparent; color: inherit; box-shadow: inset 0 0 0 1.5px currentColor; }
+.btn.white { background: #fff; color: #0f1330; }
+.menu-btn { display: none; }
+@media (max-width: 860px) {
+  .pill { display: none; position: absolute; top: 76px; left: 16px; right: 16px; flex-direction: column; background: rgba(0,0,0,.96); }
+  .pill.open { display: flex; }
+  .pill a { padding: 14px 16px; }
+  .menu-btn { display: inline-flex; background: #000; color: #ffc800; box-shadow: 0 0 0 1.5px #ffc800; padding: 12px 18px; }
+  .top .btn.cta { display: none; }
+  .top-in .right { display: flex; gap: 8px; }
+}
+.right { display: flex; align-items: center; gap: 8px; }
+
+/* hero */
+.hero { position: relative; color: #fff; padding: 0; min-height: min(92vh, 860px); display: flex; align-items: flex-end;
+  background: linear-gradient(150deg, var(--hero-a), var(--hero-b)); overflow: hidden;
+  margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); }
+.hero .img { position: absolute; inset: 0; }
+.hero .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,.2) 60%); }
+.q-mark { position: absolute; right: -2vw; top: 6%; font: 800 min(62vw, 720px)/0.8 var(--font-display); color: transparent;
+  -webkit-text-stroke: 2px rgba(255,255,255,.22); user-select: none; z-index: 1; }
+.hero .inner { position: relative; z-index: 2; width: 100%; padding: 140px max(16px, env(safe-area-inset-left, 0px)) 72px max(16px, env(safe-area-inset-right, 0px)); }
+.hero h1 { font-size: clamp(44px, 8.2vw, 120px); max-width: 12.5em; font-weight: 800; }
+.hero .sub { max-width: 34em; margin-top: 24px; font-size: clamp(17px, 1.6vw, 21px); color: rgba(255,255,255,.88); }
+.hero .acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.hero .sparkdot { color: var(--spark); }
+
+/* statement */
+.statement { text-align: center; }
+.statement h2 { font-size: clamp(34px, 5.6vw, 84px); max-width: 17em; margin: 0 auto; font-weight: 700; }
+
+/* story */
+.split { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; }
+.split > * { min-width: 0; }
+.story .big { font-family: var(--font-display); font-size: clamp(24px, 3vw, 40px); line-height: 1.2; letter-spacing: -0.015em; font-weight: 500; }
+.story .big p + p { margin-top: 1.1em; }
+.story .big p:first-child { color: var(--muted); }
+@media (max-width: 860px) { .split { grid-template-columns: 1fr; gap: 20px; } }
+
+/* image slots */
+.slot { position: relative; overflow: hidden; border-radius: var(--radius); background: linear-gradient(135deg, var(--line), var(--surface)); aspect-ratio: 4 / 3; max-width: 100%; }
+.slot img { position: absolute; inset: 0; width: %; height: 100%; object-fit: cover; }
+.slot .hint { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 16px; color: var(--muted); font-size: 14px; }
+.slot.tall { aspect-ratio: 3 / 4; }
+.slot.wide { aspect-ratio: 11/ 40; }
+.story .slot.wide { aspect-ratio: 24 / 11; }
+
+/* programmes */
+.head { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; margin-bottom: 56px; }
+.head h2 { font-size: clamp(34px, 4.6vw, 64px); font-weight: 700; }
+.head p { color: var(--muted); font-size: 19px; max-width: 36em; align-self: end; }
+@media (max-width: 860px) { .head { grid-template-columns: 1fr; gap: 16px; } }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.cards > * { min-width: 0; }
+@media (max-width: 960px) { .cards { grid-template-columns: 1fr; } }
+.card { display: flex; flex-direction: column; gap: 18px; }
+.card h3 { font-size: 28px; font-weight: 700; }
+.card p { color: var(--muted); }
+
+/* how it works */
+.how { background: var(--ink); color: var(--paper); margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.how .head p { color: color-mix(in srgb, var(--paper) 72%, transparent); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; counter-reset: s; border-top: 1px solid color-mix(in srgb, var(--paper) 25%, transparent); }
+.steps li { counter-increment: s; padding: 28px 24px 8px 0; min-width: 0; }
+.steps li::before { content: "Step " counter(s); display: block; font-weight: 600; font-size: 14px; color: var(--spark); margin-bottom: 14px; }
+.steps h3 { font-size: 24px; margin-bottom: 10px; }
+.steps p { color: color-mix(in srgb, var(--paper) 72%, transparent); font-size: 16px; }
+@media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+
+/* audiences + values */
+.chips { display: flex; flex-wrap: wrap; gap: 12px; }
+.chip { padding: 14px 24px; border-radius: 999px; border: 1.5px solid var(--ink); font-weight: 500; font-size: 18px; transition: background .15s; }
+.chip:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.values { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 48px; margin-top: 8px; }
+.values > div { padding: 28px 0; border-top: 1px solid var(--line); min-width: 0; }
+.values h3 { font-size: 26px; margin-bottom: 8px; }
+.values p { color: var(--muted); max-width: 30em; }
+@media (max-width: 760px) { .values { grid-template-columns: 1fr; } }
+
+/* founder */
+.founder-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center; }
+@media (max-width: 860px) { .founder-grid { grid-template-columns: 1fr; gap: 28px; } }
+.founder-grid h2 { font-size: clamp(34px, 4.6vw, 60px); margin-bottom: 8px; }
+.founder-grid .role { display: inline-block; background: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 4px 14px; border-radius: 8px; margin-bottom: 20px; }
+.founder-grid .bio { color: var(--muted); font-size: 19px; max-width: 34em; }
+
+/* events */
+.events { background: var(--surface); margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.event { display: flex; align-items: center; gap: 24px; padding: 24px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.event .date { width: 84px; text-align: center; border: 1px solid var(--line); border-radius: 12px; padding: 8px 0; flex: none; font-size: 13px; color: var(--muted); }
+.event .date b { display: block; font: 700 30px/1.1 var(--font-display); color: var(--ink); }
+.event .info { flex: 1 1 240px; min-width: 0; }
+.event h3 { font-size: 24px; }
+.event .meta { color: var(--muted); }
+.empty { border: 1.5px dashed var(--line); border-radius: var(--radius); padding: 36px; color: var(--muted); max-width: 44em; }
+.empty strong { display: block; color: var(--ink); font: 700 24px/1.2 var(--font-display); margin-bottom: 8px; }
+
+/* gallery */
+.gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.gallery > * { min-width: 0; }
+.gallery .slot { aspect-ratio: 3 / 4; }
+@media (max-width: 900px) { .gallery { grid-template-columns: 1fr 1fr; } }
+
+/* request */
+.request-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; }
+@media (max-width: 900px) { .request-grid { grid-template-columns: 1fr; gap: 32px; } }
+.request h2 { font-size: clamp(36px, 5vw, 68px); font-weight: 800; margin-bottom: 20px; }
+.request .lead { color: var(--muted); font-size: 19px; max-width: 30em; }
+.request ul { margin: 24px 0 0; padding-left: 20px; color: var(--muted); display: grid; gap: 8px; }
+form { background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: clamp(20px, 3vw, 36px); display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+form .full { grid-column: 1 / -1; }
+@media (max-width: 560px) { form { grid-template-columns: 1fr; } }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field label { font-weight: 600; font-size: 15px; }
+.field input, .field select, .field textarea { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--paper); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.field textarea { min-height: 110px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 4px var(--accent); }
+.err { color: #d33a3a; font-size: 14px; min-height: 1em; }
+:root[data-theme="dark"] .err { color: #ff8a8a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .err { color: #ff8a8a; } }
+.result { grid-column: 1 / -1; border-radius: 14px; background: var(--paper); border: 1.5px solid var(--accent); padding: 20px; display: grid; gap: 12px; }
+.result pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: 14px/1.5 var(--font-body); max-height: 260px; overflow: auto; }
+.result .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* footer */
+footer { border-top: 1px solid var(--line); padding-block: 64px 40px; }
+.fcols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.fcols > * { min-width: 0; }
+@media (max-width: 760px) { .fcols { grid-template-columns: 1fr 1fr; } }
+.fcols h3 { font-size: 22px; margin-bottom: 16px; }
+.fcols a, .fcols span { display: block; text-decoration: none; padding: 4px 0; overflow-wrap: anywhere; }
+.fcols a:hover { box-shadow: inset 0 -3px 0 var(--accent); }
+.fbottom { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; }
+.logo-ink { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<script>
+/* ===========================================================
+   EDIT HERE. Everything below is used across the whole page.
+   =========================================================== */
+const CONFIG = {
+  name: "The Quiz Initiative",          // working name
+  tagline: "Making Knowledge Accessible. One Campus at a Time.",
+  founder: { name: "Aniruddha Rudra", role: "Founder", bio: "Add a short founder bio here: why you started the initiative and what you want it to become." },
+  contact: { email: "aniruddharudra15@gmail.com", phone: "", location: "Guwahati, Assam, India" },
+  social: { instagram: "", linkedin: "", youtube: "", x: "", facebook: "" },   // paste full URLs; empty ones are hidden
+  formEndpoint: "https://formsubmit.co/ajax/aniruddharudra15@gmail.com",   // requests are emailed to the address above via FormSubmit. Empty = show a copyable summary instead.
+  logoImage: "",                         // optional path to your logo, e.g. "images/logo.svg". Empty = built-in mark.
+  images: {                              // paths to your photos, e.g. "images/hero.jpg". Empty = placeholder.
+    hero: "",
+    story: "images/our-story.png",
+    programme1: "", programme2: "", programme3: "",
+    founder: "",
+    gallery1: "", gallery2: "", gallery3: "", gallery4: ""
+  },
+  events: [
+    // { date: "2026-12-05", title: "Open campus quiz", place: "Venue, City", note: "Free entry", link: "" }
+  ]
+};
+</script>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#top" aria-label="Home">
+      <span data-logo></span>
+      <span data-bind="name">The Quiz Initiative</span>
+    </a>
+    <nav class="pill" id="menu" aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#programmes">What we do</a>
+      <a href="#how">How it works</a>
+      <a href="#events">Events</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="right">
+      <button class="btn menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
+      <a class="btn cta" href="#request">Request a quiz</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero wrap-full">
+    <div class="img slot-fill" data-slot="hero" data-fill></div>
+    <div class="q-mark" aria-hidden="true">?</div>
+    <div class="inner">
+      <div class="wrap">
+        <h1>Making knowledge accessible<span class="sparkdot">.</span> One campus at a&nbsp;time<span class="sparkdot">.</span></h1>
+        <p class="sub">A youth-led initiative that brings free quizzes, knowledge challenges and interactive learning sessions to schools, colleges and universities.</p>
+        <div class="acts">
+          <a class="btn" href="#request">Request a free quiz on your campus</a>
+          <a class="btn alt" href="#how">See how it works</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="statement">
+    <div class="wrap">
+      <h2>A smarter way to learn. A community built around curiosity.</h2>
+    </div>
+  </section>
+
+  <section class="story" id="about" style="border-top:1px solid var(--line)">
+    <div class="wrap split">
+      <div class="label">Our story</div>
+      <div>
+        <div class="big">
+          <p>We believe a good question can start a better conversation than a lecture.</p>
+          <p><span data-bind="name">The Quiz Initiative</span> was started by <span data-bind="founderName">Aniruddha Rudra</span> to make knowledge accessible to every student. We run free quiz competitions and learning sessions on campuses, so curiosity, critical thinking and teamwork become part of everyday student life.</p>
+        </div>
+        <div class="slot wide" data-slot="story" style="margin-top:40px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="programmes" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <h2>What we bring to your campus</h2>
+        <p>Every session is free for the institution and open to students. Formats can be adapted to your audience, subject areas and available time.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="slot" data-slot="programme1"></div>
+          <h3>Quiz competitions</h3>
+          <p>Team-based rounds on general knowledge, current affairs, science, history, culture and more, run live with a host and a scoreboard.</p>
+        </article>
+        <article class="card">
+          <div class="slot" data-slot="programme2"></div>
+          <h3>Knowledge challenges</h3>
+          <p>Short, themed challenges that reward reasoning over recall: puzzles, connect-the-clues rounds and rapid-fire questions.</p>
+        </article>
+        <article class="card">
+          <div class="slot" data-slot="programme3"></div>
+          <h3>Interactive learning sessions</h3>
+          <p>Hands-on sessions where students discuss answers, question assumptions and learn how to find reliable information.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="wrap">
+      <div class="head">
+        <h2>How a campus quiz comes together</h2>
+        <p>Four steps from first message to final scoreboard. We handle the questions, hosting and format.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Send a request</h3><p>Tell us about your institution, audience and preferred dates using the form below.</p></li>
+        <li><h3>Plan together</h3><p>We agree on format, topics, team sizes, timing and the space you can offer.</p></li>
+        <li><h3>Host the event</h3><p>Our team runs the quiz on campus. Students take part for free.</p></li>
+        <li><h3>Keep it going</h3><p>We share a short wrap-up, and your students can help organise the next round.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="head">
+        <h2>Who we work with</h2>
+        <p>Any place where people learn together can host a session.</p>
+      </div>
+      <div class="chips">
+        <span class="chip">Schools</span><span class="chip">Colleges</span><span class="chip">Universities</span><span class="chip">Student clubs and societies</span><span class="chip">Libraries and learning centres</span><span class="chip">Community institutions</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <h2>What we stand for</h2>
+        <p>These principles shape every question we write and every event we run.</p>
+      </div>
+      <div class="values">
+        <div><h3>Access first</h3><p>Knowledge should not depend on fees or location. Our events are free for institutions and students.</p></div>
+        <div><h3>Curiosity over cramming</h3><p>We reward the habit of asking why, not only the ability to remember.</p></div>
+        <div><h3>Critical thinking</h3><p>Questions are built to make people weigh evidence, spot patterns and explain their reasoning.</p></div>
+        <div><h3>Community</h3><p>Quizzes work best in teams. We design for mixed groups where everyone gets a turn.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="events" id="events">
+    <div class="wrap">
+      <div class="head">
+        <h2>Upcoming events</h2>
+        <p>Open sessions and campus visits appear here once dates are confirmed.</p>
+      </div>
+      <div id="eventList"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap founder-grid">
+      <div class="slot tall" data-slot="founder"></div>
+      <div>
+        <div class="label" style="margin-bottom:14px">Meet the founder</div>
+        <h2 data-bind="founderName">Aniruddha Rudra</h2>
+        <div class="role" data-bind="founderRole">Founder</div>
+        <p class="bio" data-bind="founderBio"></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <h2>From the campuses</h2>
+        <p>Photos from our sessions will appear here.</p>
+      </div>
+      <div class="gallery">
+        <div class="slot" data-slot="gallery1"></div>
+        <div class="slot" data-slot="gallery2"></div>
+        <div class="slot" data-slot="gallery3"></div>
+        <div class="slot" data-slot="gallery4"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="request" id="request" style="border-top:1px solid var(--line)">
+    <div class="wrap request-grid">
+      <div>
+        <h2>Bring a free quiz to your campus</h2>
+        <p class="lead">Fill in the form and we will get back to you to plan the event. There is no fee for the institution.</p>
+        <ul>
+          <li>Suitable for groups from about 20 to several hundred</li>
+          <li>Indoor halls, classrooms or auditoriums</li>
+          <li>We will confirm format and dates with you before anything is final</li>
+        </ul>
+      </div>
+      <form id="reqForm" novalidate>
+        <div class="field full"><label for="inst">Institution name</label><input id="inst" name="institution" type="text" autocomplete="organization" required><div class="err" data-err="inst"></div></div>
+        <div class="field"><label for="itype">Institution type</label>
+          <select id="itype" name="type" required><option value="">Choose one</option><option>School</option><option>College</option><option>University</option><option>Student club or society</option><option>Other</option></select><div class="err" data-err="itype"></div></div>
+        <div class="field"><label for="city">City and state</label><input id="city" name="city" type="text" autocomplete="address-level2" required><div class="err" data-err="city"></div></div>
+        <div class="field"><label for="person">Contact person</label><input id="person" name="person" type="text" autocomplete="name" required><div class="err" data-err="person"></div></div>
+        <div class="field"><label for="role">Role or designation</label><input id="role" name="role" type="text"></div>
+        <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required><div class="err" data-err="email"></div></div>
+        <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+        <div class="field"><label for="size">Expected participants</label><input id="size" name="size" type="number" min="1" inputmode="numeric"></div>
+        <div class="field"><label for="when">Preferred month</label><input id="when" name="when" type="month"></div>
+        <div class="field full"><label for="msg">Anything else we should know?</label><textarea id="msg" name="message" placeholder="Audience, topics of interest, venue, language, accessibility needs"></textarea></div>
+        <div class="full"><button class="btn" type="submit">Send request</button></div>
+        <div class="result" id="result" hidden></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="fcols">
+      <div>
+        <h3>About</h3>
+        <a href="#about">Our story</a><a href="#how">How it works</a><a href="#programmes">What we do</a>
+      </div>
+      <div>
+        <h3>Get involved</h3>
+        <a href="#request">Request a quiz</a><a href="#events">Upcoming events</a>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <span data-bind="email"></span>
+        <span data-bind="phone" data-hide-empty></span>
+        <span data-bind="location"></span>
+      </div>
+      <div>
+        <h3>Follow</h3>
+        <div id="socials"></div>
+      </div>
+    </div>
+    <div class="fbottom">
+      <span>&copy; <span id="yr"></span> <span data-bind="name">The Quiz Initiative</span>. Built by students, for students.</span>
+      <span>Founded by <span data-bind="founderName">Aniruddha Rudra</span></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var C = CONFIG;
+  var ns = 'http://www.w3.org/2000/svg';
+
+  /* text bindings */
+  var map = { name: C.name, founderName: C.founder.name, founderRole: C.founder.role, founderBio: C.founder.bio,
+              email: C.contact.email, phone: C.contact.phone, location: C.contact.location };
+  document.querySelectorAll('[data-bind]').forEach(function (el) {
+    var v = map[el.getAttribute('data-bind')];
+    if (v) el.textContent = v; else if (el.hasAttribute('data-hide-empty')) el.hidden = true;
+  });
+  document.title = C.name;
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* logo: your image, or a built-in mark */
+  document.querySelectorAll('[data-logo]').forEach(function (el) {
+    if (C.logoImage) {
+      var im = document.createElement('img'); im.src = C.logoImage; im.alt = ''; im.style.cssText = 'height:40px;width:auto;display:block';
+      el.appendChild(im);
+    } else {
+      el.innerHTML = '<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#ffc800"/><path d="M14 15.5a6 6 0 1 1 9.2 5.1c-1.8 1.2-3.2 2.1-3.2 4.4" fill="none" stroke="#0a0a0a" stroke-width="3.2" stroke-linecap="round"/><circle cx="20" cy="31" r="2.4" fill="#0a0a0a"/><\/svg>';
+    }
+  });
+
+  /* image slots */
+  document.querySelectorAll('[data-slot]').forEach(function (el) {
+    var key = el.getAttribute('data-slot'), src = C.images[key];
+    if (src) {
+      var im = document.createElement('img'); im.src = src; im.alt = ''; im.loading = 'lazy';
+      el.appendChild(im);
+    } else if (!el.hasAttribute('data-fill')) {
+      var h = document.createElement('div'); h.className = 'hint'; h.textContent = 'Add image: images.' + key + ' in CONFIG';
+      el.appendChild(h);
+    }
+  });
+
+  /* socials */
+  var labels = { instagram: 'Instagram', linkedin: 'LinkedIn', youtube: 'YouTube', x: 'X', facebook: 'Facebook' };
+  var box = document.getElementById('socials'), any = false;
+  Object.keys(labels).forEach(function (k) {
+    if (C.social[k]) { any = true; var a = document.createElement('a'); a.href = C.social[k]; a.target = '_blank'; a.rel = 'noopener'; a.textContent = labels[k]; box.appendChild(a); }
+  });
+  if (!any) { var s = document.createElement('span'); s.style.color = 'var(--muted)'; s.textContent = 'Social links coming soon'; box.appendChild(s); }
+
+  /* events */
+  var list = document.getElementById('eventList');
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  if (!C.events.length) {
+    list.innerHTML = '<div class="empty"><strong>No public dates announced yet.<\/strong>Campus quizzes are scheduled with each institution. Use the request form to book one for yours.<\/div>';
+  } else {
+    C.events.forEach(function (e) {
+      var d = new Date(e.date + 'T00:00:00');
+      var row = document.createElement('div'); row.className = 'event';
+      row.innerHTML = '<div class="date">' + days[d.getDay()] + '<b>' + d.getDate() + '<\/b>' + months[d.getMonth()] + ' ' + d.getFullYear() + '<\/div>' +
+        '<div class="info"><h3><\/h3><div class="meta"><\/div><\/div>';
+      row.querySelector('h3').textContent = e.title;
+      row.querySelector('.meta').textContent = [e.place, e.note].filter(Boolean).join(' · ');
+      if (e.link) { var a = document.createElement('a'); a.className = 'btn alt'; a.href = e.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Details'; row.appendChild(a); }
+      list.appendChild(row);
+    });
+  }
+
+  /* mobile menu */
+  var btn = document.getElementById('menuBtn'), menu = document.getElementById('menu');
+  btn.addEventListener('click', function () { var o = menu.classList.toggle('open'); btn.setAttribute('aria-expanded', o); });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') { menu.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); } });
+
+  /* request form */
+  var form = document.getElementById('reqForm'), result = document.getElementById('result');
+  function setErr(id, msg) { var e = form.querySelector('[data-err="' + id + '"]'); if (e) e.textContent = msg || ''; }
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var f = function (id) { return form.elements[id] ? form.elements[id].value.trim() : ''; };
+    var ok = true;
+    [['inst','Enter the institution name.'],['itype','Choose an institution type.'],['city','Enter the city and state.'],['person','Enter a contact person.']].forEach(function (p) {
+      var v = f(p[0]); setErr(p[0], v ? '' : p[1]); if (!v) ok = false;
+    });
+    var em = f('email');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { setErr('email', 'Enter a valid email address.'); ok = false; } else setErr('email', '');
+    if (!ok) { var first = form.querySelector('.err:not(:empty)'); if (first) first.parentNode.querySelector('input,select').focus(); return; }
+
+    var lines = ['Quiz request for ' + C.name, '',
+      'Institution: ' + f('inst'), 'Type: ' + f('itype'), 'City and state: ' + f('city'),
+      'Contact person: ' + f('person') + (f('role') ? ' (' + f('role') + ')' : ''),
+      'Email: ' + em, 'Phone: ' + (f('phone') || 'not given'),
+      'Expected participants: ' + (f('size') || 'not given'), 'Preferred month: ' + (f('when') || 'not given'), '',
+      'Notes: ' + (f('msg') || 'none')];
+    var text = lines.join('\n');
+
+    function showSummary(intro) {
+      result.hidden = false; result.innerHTML = '';
+      var p = document.createElement('p'); p.innerHTML = intro; result.appendChild(p);
+      var pre = document.createElement('pre'); pre.textContent = text; result.appendChild(pre);
+      var row = document.createElement('div'); row.className = 'row';
+      var cp = document.createElement('button'); cp.type = 'button'; cp.className = 'btn'; cp.textContent = 'Copy request';
+      cp.addEventListener('click', function () {
+        function fallback() { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); cp.textContent = 'Selected. Press copy.'; }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { cp.textContent = 'Copied'; }, fallback); else fallback();
+      });
+      row.appendChild(cp);
+      var a = document.createElement('a'); a.className = 'btn alt'; a.textContent = 'Open in email app';
+      a.href = 'mailto:' + C.contact.email + '?subject=' + encodeURIComponent('Quiz request: ' + f('inst')) + '&body=' + encodeURIComponent(text);
+      row.appendChild(a);
+      result.appendChild(row);
+      var em2 = document.createElement('p'); em2.style.cssText = 'font-size:14px;color:var(--muted)';
+      em2.textContent = 'Send it to ' + C.contact.email + '. If the email app does not open, copy the request and paste it into a new message.';
+      result.appendChild(em2);
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    if (C.formEndpoint) {
+      fetch(C.formEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ _subject: 'Quiz request: ' + f('inst'), _template: 'table', _captcha: 'false', institution: f('inst'), type: f('itype'), city: f('city'), person: f('person'), role: f('role'), email: em, phone: f('phone'), size: f('size'), when: f('when'), message: f('msg') }) })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (d) {
+            if (!r.ok || d.success === 'false' || d.success === false) throw new Error('bad');
+            result.hidden = false; result.innerHTML = '';
+            var p = document.createElement('p');
+            var b = document.createElement('strong'); b.textContent = 'Request sent.';
+            p.appendChild(b); p.appendChild(document.createTextNode(' Thank you. We will reply to ' + em + ' soon.'));
+            result.appendChild(p); form.reset();
+          });
+        })
+        .catch(function () { showSummary('<strong>We could not send this automatically.<\/strong> Copy the request below and email it to ' + C.contact.email + ' instead.'); });
+    } else {
+      showSummary('<strong>Your request is ready.<\/strong> This site is not yet connected to an inbox, so send the summary below by email.');
+    }
+  });
+})();
+</script>
