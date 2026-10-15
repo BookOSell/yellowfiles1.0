@@ -102,7 +102,7 @@ section { padding-block: clamp(64px, 9vw, 128px); }
 
 /* image slots */
 .slot { position: relative; overflow: hidden; border-radius: var(--radius); background: linear-gradient(135deg, var(--line), var(--surface)); aspect-ratio: 4 / 3; max-width: 100%; }
-.slot img { position: absolute; inset: 0; width: %; height: 100%; object-fit: cover; }
+.slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .slot .hint { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 16px; color: var(--muted); font-size: 14px; }
 .slot.tall { aspect-ratio: 3 / 4; }
 .slot.wide { aspect-ratio: 11/ 40; }
@@ -144,6 +144,7 @@ section { padding-block: clamp(64px, 9vw, 128px); }
 
 /* founder */
 .founder-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center; }
+.founder-grid > .slot { max-width: 400px; }
 @media (max-width: 860px) { .founder-grid { grid-template-columns: 1fr; gap: 28px; } }
 .founder-grid h2 { font-size: clamp(34px, 4.6vw, 60px); margin-bottom: 8px; }
 .founder-grid .role { display: inline-block; background: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 4px 14px; border-radius: 8px; margin-bottom: 20px; }
@@ -212,12 +213,12 @@ const CONFIG = {
   contact: { email: "aniruddharudra15@gmail.com", phone: "", location: "Guwahati, Assam, India" },
   social: { instagram: "", linkedin: "", youtube: "", x: "", facebook: "" },   // paste full URLs; empty ones are hidden
   formEndpoint: "https://formsubmit.co/ajax/aniruddharudra15@gmail.com",   // requests are emailed to the address above via FormSubmit. Empty = show a copyable summary instead.
-  logoImage: "",                         // optional path to your logo, e.g. "images/logo.svg". Empty = built-in mark.
+  logoImage: "images/logo.svg",          // optional path to your logo, e.g. "images/logo.svg". Empty = built-in mark.
   images: {                              // paths to your photos, e.g. "images/hero.jpg". Empty = placeholder.
-    hero: "",
+    hero: "hero-banner.png",
     story: "images/our-story.png",
-    programme1: "", programme2: "", programme3: "",
-    founder: "",
+    programme1: "images/programme1.jpeg", programme2: "images/programme2.jpeg", programme3: "images/programme3.jpeg",
+    founder: "images/founder.jpeg",
     gallery1: "", gallery2: "", gallery3: "", gallery4: ""
   },
   events: [
