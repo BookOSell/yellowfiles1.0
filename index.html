@@ -162,12 +162,6 @@ section { padding-block: clamp(64px, 9vw, 128px); }
 .empty { border: 1.5px dashed var(--line); border-radius: var(--radius); padding: 36px; color: var(--muted); max-width: 44em; }
 .empty strong { display: block; color: var(--ink); font: 700 24px/1.2 var(--font-display); margin-bottom: 8px; }
 
-/* gallery */
-.gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.gallery > * { min-width: 0; }
-.gallery .slot { aspect-ratio: 3 / 4; }
-@media (max-width: 900px) { .gallery { grid-template-columns: 1fr 1fr; } }
-
 /* request */
 .request-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; }
 @media (max-width: 900px) { .request-grid { grid-template-columns: 1fr; gap: 32px; } }
@@ -218,8 +212,7 @@ const CONFIG = {
     hero: "hero-banner.png",
     story: "images/our-story.png",
     programme1: "images/programme1.jpeg", programme2: "images/programme2.jpeg", programme3: "images/programme3.jpeg",
-    founder: "images/founder.jpeg",
-    gallery1: "", gallery2: "", gallery3: "", gallery4: ""
+    founder: "images/founder.jpeg"
   },
   events: [
     // { date: "2026-12-05", title: "Open campus quiz", place: "Venue, City", note: "Free entry", link: "" }
@@ -368,21 +361,6 @@ const CONFIG = {
         <h2 data-bind="founderName">Aniruddha Rudra</h2>
         <div class="role" data-bind="founderRole">Founder</div>
         <p class="bio" data-bind="founderBio"></p>
-      </div>
-    </div>
-  </section>
-
-  <section style="padding-top:0">
-    <div class="wrap">
-      <div class="head">
-        <h2>From the campuses</h2>
-        <p>Photos from our sessions will appear here.</p>
-      </div>
-      <div class="gallery">
-        <div class="slot" data-slot="gallery1"></div>
-        <div class="slot" data-slot="gallery2"></div>
-        <div class="slot" data-slot="gallery3"></div>
-        <div class="slot" data-slot="gallery4"></div>
       </div>
     </div>
   </section>
